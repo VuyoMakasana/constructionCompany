@@ -1,0 +1,33 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"
+  url = env("DATABASE_URL") }
+
+model Enquiry {
+  id          String   @id @default(cuid())
+  reference   String   @unique
+  kind        String   // CONTACT or QUOTE
+  status      String   @default("NEW")
+  name        String
+  email       String
+  phone       String?
+  subject     String?
+  message     String?
+  projectType String?
+  sector      String?
+  location    String?
+  budget      String?
+  startDate   String?
+  createdAt   DateTime @default(now())
+  emails      EmailLog[]
+}
+
+model EmailLog {
+  id        String   @id @default(cuid())
+  enquiryId String?
+  enquiry   Enquiry? @relation(fields: [enquiryId], references: [id])
+  toAddress String
+  subject   String
+  ok        Boolean
+  error     String?
+  createdAt DateTime @default(now())
+}
